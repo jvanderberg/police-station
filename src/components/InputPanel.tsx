@@ -62,7 +62,7 @@ export default function InputPanel({ home, onHomeChange }: InputPanelProps) {
           type="range"
           min={100_000}
           max={1_500_000}
-          step={500}
+          step={5_000}
           value={home.marketValue}
           onChange={handleSlider}
           className="slider"
