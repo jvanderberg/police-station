@@ -289,24 +289,25 @@ body {
   margin-top: 0.75rem;
   padding-top: 0.75rem;
   border-top: 1px solid var(--color-border);
-  display: flex;
-  gap: 1.5rem;
-  align-items: start;
 }
 
-.advanced-section .bond-input-label {
+.advanced-inputs {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.advanced-inputs .bond-input-label {
   flex: 1;
 }
 
 .defaults-note {
   font-size: 0.75rem;
   color: var(--color-text-muted);
-  align-self: end;
-  padding-bottom: 0.3rem;
+  margin-top: 0.5rem;
 }
 
 @media (max-width: 700px) {
-  .advanced-section {
+  .advanced-inputs {
     flex-direction: column;
     gap: 0.75rem;
   }

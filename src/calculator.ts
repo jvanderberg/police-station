@@ -5,7 +5,7 @@ export const DEFAULTS = {
   interestRate: 0.0445,
   assessmentRatio: 0.10,
   equalizationMultiplier: 3.0355,
-  oakParkTotalEAV: 2_361_857_488,
+  oakParkTotalEAV: 2_353_827_289,
   medianHomeValue: 465_500,
   homeownerExemption: 10_000,
   seniorExemption: 8_000,

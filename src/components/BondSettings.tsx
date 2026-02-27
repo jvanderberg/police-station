@@ -140,38 +140,41 @@ export default function BondSettings({ bond, onBondChange, advanced, onAdvancedC
       </div>
       {showAdvanced && (
         <div className="advanced-section">
-          <label className="bond-input-label">
-            Oak Park Total EAV
-            <input
-              type="text"
-              inputMode="numeric"
-              className="bond-input"
-              value={eavText}
-              onChange={(e) => {
-                setEavText(e.target.value);
-                const parsed = Number(e.target.value.replace(/[^0-9]/g, ""));
-                if (!isNaN(parsed) && parsed > 0) onAdvancedChange({ ...advanced, totalEAV: parsed });
-              }}
-              onBlur={() => setEavText(formatDollars(advanced.totalEAV))}
-            />
-          </label>
-          <label className="bond-input-label">
-            State Equalization Multiplier
-            <input
-              type="text"
-              inputMode="decimal"
-              className="bond-input"
-              value={eqText}
-              onChange={(e) => {
-                setEqText(e.target.value);
-                const parsed = parseFloat(e.target.value);
-                if (!isNaN(parsed) && parsed > 0) onAdvancedChange({ ...advanced, equalizationMultiplier: parsed });
-              }}
-              onBlur={() => setEqText(String(advanced.equalizationMultiplier))}
-            />
-          </label>
+          <div className="advanced-inputs">
+            <label className="bond-input-label">
+              Oak Park Total EAV
+              <input
+                type="text"
+                inputMode="numeric"
+                className="bond-input"
+                value={eavText}
+                onChange={(e) => {
+                  setEavText(e.target.value);
+                  const parsed = Number(e.target.value.replace(/[^0-9]/g, ""));
+                  if (!isNaN(parsed) && parsed > 0) onAdvancedChange({ ...advanced, totalEAV: parsed });
+                }}
+                onBlur={() => setEavText(formatDollars(advanced.totalEAV))}
+              />
+            </label>
+            <label className="bond-input-label">
+              State Equalization Multiplier
+              <input
+                type="text"
+                inputMode="decimal"
+                className="bond-input"
+                value={eqText}
+                onChange={(e) => {
+                  setEqText(e.target.value);
+                  const parsed = parseFloat(e.target.value);
+                  if (!isNaN(parsed) && parsed > 0) onAdvancedChange({ ...advanced, equalizationMultiplier: parsed });
+                }}
+                onBlur={() => setEqText(String(advanced.equalizationMultiplier))}
+              />
+            </label>
+          </div>
           <p className="defaults-note">
-            Defaults: EAV ${formatDollars(DEFAULTS.oakParkTotalEAV)}, Multiplier {DEFAULTS.equalizationMultiplier}
+            Defaults are from Tax Year 2024: EAV ${formatDollars(DEFAULTS.oakParkTotalEAV)} (Cook County Clerk),
+            Equalization Factor {DEFAULTS.equalizationMultiplier} (IL Dept. of Revenue)
           </p>
         </div>
       )}
