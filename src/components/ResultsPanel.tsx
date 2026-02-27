@@ -1,11 +1,11 @@
-import type { CalculationResult } from "../calculator";
+import { DEFAULTS, type CalculationResult } from "../calculator";
 
 interface ResultsPanelProps {
   result: CalculationResult;
 }
 
-function fmtCurrency(n: number, decimals = 2): string {
-  return n.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+function fmtCurrency(n: number): string {
+  return n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
 function fmtPercent(n: number): string {
@@ -32,29 +32,46 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
         <h3>How it's calculated</h3>
         <table className="breakdown-table">
           <tbody>
+            <tr className="section-label">
+              <td colSpan={2}>Village-wide bond levy</td>
+            </tr>
+            <tr>
+              <td>Annual Debt Service</td>
+              <td className="num">${fmtCurrency(result.annualDebtService)}</td>
+            </tr>
+            <tr>
+              <td>Oak Park Total EAV</td>
+              <td className="num">${fmtCurrency(DEFAULTS.oakParkTotalEAV)}</td>
+            </tr>
+            <tr className="highlight-row">
+              <td>Implied Tax Rate (debt service / EAV)</td>
+              <td className="num">{fmtPercent(result.impliedTaxRate)}</td>
+            </tr>
+            <tr className="section-label">
+              <td colSpan={2}>Your property</td>
+            </tr>
             <tr>
               <td>Assessed Value (10% of market)</td>
-              <td className="num">${fmtCurrency(result.assessedValue, 0)}</td>
+              <td className="num">${fmtCurrency(result.assessedValue)}</td>
             </tr>
             <tr>
               <td>Equalized Value (&times; 3.0355)</td>
               <td className="num">${fmtCurrency(result.equalizedValue)}</td>
             </tr>
             <tr>
-              <td>Total Exemptions</td>
-              <td className="num">-${fmtCurrency(result.totalExemptions, 0)}</td>
+              <td>Exemptions</td>
+              <td className="num">-${fmtCurrency(result.totalExemptions)}</td>
             </tr>
             <tr className="highlight-row">
-              <td>Adjusted EAV</td>
+              <td>Your Adjusted EAV</td>
               <td className="num">${fmtCurrency(result.adjustedEAV)}</td>
             </tr>
-            <tr>
-              <td>Annual Debt Service (village-wide)</td>
-              <td className="num">${fmtCurrency(result.annualDebtService, 0)}</td>
+            <tr className="section-label">
+              <td colSpan={2}>Your cost = EAV &times; tax rate</td>
             </tr>
             <tr>
-              <td>Implied Tax Rate</td>
-              <td className="num">{fmtPercent(result.impliedTaxRate)}</td>
+              <td>${fmtCurrency(result.adjustedEAV)} &times; {fmtPercent(result.impliedTaxRate)}</td>
+              <td className="num"><strong>${fmtCurrency(result.annualCost)}/yr</strong></td>
             </tr>
           </tbody>
         </table>

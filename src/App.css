@@ -389,6 +389,16 @@ body {
   font-weight: 700;
 }
 
+.section-label td {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  padding-top: 0.75rem;
+  border-bottom: none;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
 /* Comparison Table */
 .comparison-section {
   background: var(--color-surface);

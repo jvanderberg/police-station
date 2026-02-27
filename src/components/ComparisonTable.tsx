@@ -8,7 +8,7 @@ interface ComparisonTableProps {
 const COMPARISON_VALUES = [300_000, 430_000, 465_500, 500_000, 750_000];
 
 function fmtCurrency(n: number): string {
-  return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
 function fmtHome(n: number): string {
