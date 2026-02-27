@@ -1,7 +1,8 @@
-import { DEFAULTS, type CalculationResult } from "../calculator";
+import type { CalculationResult, AdvancedParams } from "../calculator";
 
 interface ResultsPanelProps {
   result: CalculationResult;
+  advanced: AdvancedParams;
 }
 
 function fmtCurrency(n: number): string {
@@ -12,7 +13,7 @@ function fmtPercent(n: number): string {
   return (n * 100).toFixed(4) + "%";
 }
 
-export default function ResultsPanel({ result }: ResultsPanelProps) {
+export default function ResultsPanel({ result, advanced }: ResultsPanelProps) {
   return (
     <div className="results-panel">
       <h2>Your Estimated Bond Cost</h2>
@@ -41,7 +42,7 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             </tr>
             <tr>
               <td>Oak Park Total EAV</td>
-              <td className="num">${fmtCurrency(DEFAULTS.oakParkTotalEAV)}</td>
+              <td className="num">${fmtCurrency(advanced.totalEAV)}</td>
             </tr>
             <tr className="highlight-row">
               <td>Implied Tax Rate (debt service / EAV)</td>
@@ -55,7 +56,7 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
               <td className="num">${fmtCurrency(result.assessedValue)}</td>
             </tr>
             <tr>
-              <td>Equalized Value (&times; 3.0355)</td>
+              <td>Equalized Value (&times; {advanced.equalizationMultiplier})</td>
               <td className="num">${fmtCurrency(result.equalizedValue)}</td>
             </tr>
             <tr>

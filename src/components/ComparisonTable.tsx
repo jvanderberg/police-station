@@ -1,8 +1,9 @@
-import { calculate, type BondParams, type HomeParams } from "../calculator";
+import { calculate, type BondParams, type HomeParams, type AdvancedParams } from "../calculator";
 
 interface ComparisonTableProps {
   bond: BondParams;
   home: HomeParams;
+  advanced: AdvancedParams;
 }
 
 const COMPARISON_VALUES = [300_000, 430_000, 465_500, 500_000, 750_000];
@@ -15,9 +16,9 @@ function fmtHome(n: number): string {
   return "$" + n.toLocaleString("en-US");
 }
 
-export default function ComparisonTable({ bond, home }: ComparisonTableProps) {
+export default function ComparisonTable({ bond, home, advanced }: ComparisonTableProps) {
   const rows = COMPARISON_VALUES.map((value) => {
-    const result = calculate(bond, { ...home, marketValue: value });
+    const result = calculate(bond, { ...home, marketValue: value }, advanced);
     const isActive = home.marketValue === value;
     return { value, result, isActive };
   });

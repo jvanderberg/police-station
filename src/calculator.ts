@@ -19,6 +19,11 @@ export interface BondParams {
   interestRate: number;
 }
 
+export interface AdvancedParams {
+  totalEAV: number;
+  equalizationMultiplier: number;
+}
+
 export interface HomeParams {
   marketValue: number;
   homeownerExemption: boolean;
@@ -69,12 +74,15 @@ export function totalExemptions(home: HomeParams): number {
  * 3. Adjusted EAV = (market value * 10% * equalization multiplier) - exemptions
  * 4. Annual cost = adjusted EAV * implied tax rate
  */
-export function calculate(bond: BondParams, home: HomeParams): CalculationResult {
+export function calculate(bond: BondParams, home: HomeParams, advanced?: AdvancedParams): CalculationResult {
+  const totalEAV = advanced?.totalEAV ?? DEFAULTS.oakParkTotalEAV;
+  const eqMultiplier = advanced?.equalizationMultiplier ?? DEFAULTS.equalizationMultiplier;
+
   const annualDebtService = pmt(bond.principal, bond.interestRate, bond.termYears);
-  const impliedTaxRate = annualDebtService / DEFAULTS.oakParkTotalEAV;
+  const impliedTaxRate = annualDebtService / totalEAV;
 
   const assessedValue = home.marketValue * DEFAULTS.assessmentRatio;
-  const equalizedValue = assessedValue * DEFAULTS.equalizationMultiplier;
+  const equalizedValue = assessedValue * eqMultiplier;
   const exemptions = totalExemptions(home);
   const adjustedEAV = Math.max(0, equalizedValue - exemptions);
 

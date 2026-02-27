@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DEFAULTS, calculate, type BondParams, type HomeParams } from "./calculator";
+import { DEFAULTS, calculate, type BondParams, type HomeParams, type AdvancedParams } from "./calculator";
 import InputPanel from "./components/InputPanel";
 import BondSettings from "./components/BondSettings";
 import ResultsPanel from "./components/ResultsPanel";
@@ -20,7 +20,12 @@ export default function App() {
     interestRate: DEFAULTS.interestRate,
   });
 
-  const result = calculate(bond, home);
+  const [advanced, setAdvanced] = useState<AdvancedParams>({
+    totalEAV: DEFAULTS.oakParkTotalEAV,
+    equalizationMultiplier: DEFAULTS.equalizationMultiplier,
+  });
+
+  const result = calculate(bond, home, advanced);
 
   function handleReset() {
     setHome({
@@ -35,6 +40,10 @@ export default function App() {
       termYears: DEFAULTS.termYears,
       interestRate: DEFAULTS.interestRate,
     });
+    setAdvanced({
+      totalEAV: DEFAULTS.oakParkTotalEAV,
+      equalizationMultiplier: DEFAULTS.equalizationMultiplier,
+    });
   }
 
   return (
@@ -48,11 +57,11 @@ export default function App() {
           Estimate your household tax impact using Cook County property tax mechanics
         </p>
       </header>
-      <BondSettings bond={bond} onBondChange={setBond} annualDebtService={result.annualDebtService} />
+      <BondSettings bond={bond} onBondChange={setBond} advanced={advanced} onAdvancedChange={setAdvanced} annualDebtService={result.annualDebtService} />
       <main className="app-layout">
         <InputPanel home={home} onHomeChange={setHome} />
-        <ResultsPanel result={result} />
-        <ComparisonTable bond={bond} home={home} />
+        <ResultsPanel result={result} advanced={advanced} />
+        <ComparisonTable bond={bond} home={home} advanced={advanced} />
       </main>
       <footer className="app-footer">
         <p>
