@@ -24,6 +24,8 @@ export default function BondSettings({ bond, onBondChange, advanced, onAdvancedC
   const [eavText, setEavText] = useState(formatDollars(advanced.totalEAV));
   const [eqText, setEqText] = useState(String(advanced.equalizationMultiplier));
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showEavHelp, setShowEavHelp] = useState(false);
+  const [showEqHelp, setShowEqHelp] = useState(false);
 
   useEffect(() => {
     setBondText(formatDollars(bond.principal));
@@ -141,8 +143,20 @@ export default function BondSettings({ bond, onBondChange, advanced, onAdvancedC
       {showAdvanced && (
         <div className="advanced-section">
           <div className="advanced-inputs">
-            <label className="bond-input-label">
-              Oak Park Total EAV
+            <div className="bond-input-label">
+              <span className="label-with-help">
+                Oak Park Total EAV
+                <button
+                  className="help-btn"
+                  onClick={() => setShowEavHelp(!showEavHelp)}
+                  aria-label="What is EAV?"
+                >?</button>
+              </span>
+              {showEavHelp && (
+                <div className="help-popup">
+                  <strong>Equalized Assessed Value (EAV)</strong> is the total taxable value of all property in Oak Park after the state equalization factor is applied. The village's bond debt service is spread across this total EAV to determine each property's share.
+                </div>
+              )}
               <input
                 type="text"
                 inputMode="numeric"
@@ -155,9 +169,21 @@ export default function BondSettings({ bond, onBondChange, advanced, onAdvancedC
                 }}
                 onBlur={() => setEavText(formatDollars(advanced.totalEAV))}
               />
-            </label>
-            <label className="bond-input-label">
-              State Equalization Multiplier
+            </div>
+            <div className="bond-input-label">
+              <span className="label-with-help">
+                State Equalization Multiplier
+                <button
+                  className="help-btn"
+                  onClick={() => setShowEqHelp(!showEqHelp)}
+                  aria-label="What is the equalization multiplier?"
+                >?</button>
+              </span>
+              {showEqHelp && (
+                <div className="help-popup">
+                  <strong>State Equalization Multiplier</strong> is a factor set annually by the Illinois Department of Revenue to equalize Cook County assessments with the rest of the state. Your assessed value (10% of market value) is multiplied by this factor to get your equalized assessed value.
+                </div>
+              )}
               <input
                 type="text"
                 inputMode="decimal"
@@ -170,7 +196,7 @@ export default function BondSettings({ bond, onBondChange, advanced, onAdvancedC
                 }}
                 onBlur={() => setEqText(String(advanced.equalizationMultiplier))}
               />
-            </label>
+            </div>
           </div>
           <p className="defaults-note">
             Defaults are from Tax Year 2024: EAV ${formatDollars(DEFAULTS.oakParkTotalEAV)} (Cook County Clerk),
