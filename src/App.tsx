@@ -21,7 +21,7 @@ export default function App() {
   });
 
   const [advanced, setAdvanced] = useState<AdvancedParams>({
-    totalEAV: DEFAULTS.oakParkTotalEAV,
+    totalAV: DEFAULTS.oakParkTotalAV,
     equalizationMultiplier: DEFAULTS.equalizationMultiplier,
   });
 
@@ -41,7 +41,7 @@ export default function App() {
       interestRate: DEFAULTS.interestRate,
     });
     setAdvanced({
-      totalEAV: DEFAULTS.oakParkTotalEAV,
+      totalAV: DEFAULTS.oakParkTotalAV,
       equalizationMultiplier: DEFAULTS.equalizationMultiplier,
     });
   }
@@ -60,7 +60,7 @@ export default function App() {
       <BondSettings bond={bond} onBondChange={setBond} advanced={advanced} onAdvancedChange={setAdvanced} annualDebtService={result.annualDebtService} />
       <main className="app-layout">
         <InputPanel home={home} onHomeChange={setHome} />
-        <ResultsPanel result={result} advanced={advanced} />
+        <ResultsPanel result={result} />
         <ComparisonTable bond={bond} home={home} advanced={advanced} />
       </main>
       <footer className="app-footer">

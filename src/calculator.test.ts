@@ -9,7 +9,7 @@ const DEFAULT_BOND: BondParams = {
 
 /** PDF examples were computed against the 2023 EAV */
 const PDF_ADVANCED: AdvancedParams = {
-  totalEAV: 2_361_857_488,
+  totalAV: 2_361_857_488 / 3.0355,
   equalizationMultiplier: 3.0355,
 };
 
@@ -225,16 +225,17 @@ describe("bond parameter changes", () => {
 // ── Advanced params override ─────────────────────────────────────────
 
 describe("advanced params", () => {
-  it("custom EAV changes the tax rate", () => {
+  it("custom totalAV changes the tax rate", () => {
     const r1 = calculate(DEFAULT_BOND, homeWith(465_500));
-    const r2 = calculate(DEFAULT_BOND, homeWith(465_500), { totalEAV: 1_000_000_000, equalizationMultiplier: 3.0355 });
+    const r2 = calculate(DEFAULT_BOND, homeWith(465_500), { totalAV: 1_000_000_000 / 3.0355, equalizationMultiplier: 3.0355 });
     expect(r2.impliedTaxRate).toBeGreaterThan(r1.impliedTaxRate);
     expect(r2.annualCost).toBeGreaterThan(r1.annualCost);
   });
 
-  it("custom equalization multiplier changes equalized value", () => {
+  it("custom equalization multiplier changes equalized value and totalEAV", () => {
     const r1 = calculate(DEFAULT_BOND, homeWith(465_500));
-    const r2 = calculate(DEFAULT_BOND, homeWith(465_500), { totalEAV: DEFAULTS.oakParkTotalEAV, equalizationMultiplier: 2.0 });
+    const r2 = calculate(DEFAULT_BOND, homeWith(465_500), { totalAV: DEFAULTS.oakParkTotalAV, equalizationMultiplier: 2.0 });
     expect(r2.equalizedValue).toBeLessThan(r1.equalizedValue);
+    expect(r2.totalEAV).toBeLessThan(r1.totalEAV);
   });
 });

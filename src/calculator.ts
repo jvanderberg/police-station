@@ -6,6 +6,8 @@ export const DEFAULTS = {
   assessmentRatio: 0.10,
   equalizationMultiplier: 3.0355,
   oakParkTotalEAV: 2_353_827_289,
+  /** Back-calculated: totalEAV / equalizationMultiplier */
+  oakParkTotalAV: 2_353_827_289 / 3.0355,
   medianHomeValue: 465_500,
   homeownerExemption: 10_000,
   seniorExemption: 8_000,
@@ -20,7 +22,7 @@ export interface BondParams {
 }
 
 export interface AdvancedParams {
-  totalEAV: number;
+  totalAV: number;
   equalizationMultiplier: number;
 }
 
@@ -38,6 +40,8 @@ export interface CalculationResult {
   totalExemptions: number;
   adjustedEAV: number;
   annualDebtService: number;
+  totalEAV: number;
+  equalizationMultiplier: number;
   impliedTaxRate: number;
   annualCost: number;
   monthlyCost: number;
@@ -75,8 +79,9 @@ export function totalExemptions(home: HomeParams): number {
  * 4. Annual cost = adjusted EAV * implied tax rate
  */
 export function calculate(bond: BondParams, home: HomeParams, advanced?: AdvancedParams): CalculationResult {
-  const totalEAV = advanced?.totalEAV ?? DEFAULTS.oakParkTotalEAV;
+  const totalAV = advanced?.totalAV ?? DEFAULTS.oakParkTotalAV;
   const eqMultiplier = advanced?.equalizationMultiplier ?? DEFAULTS.equalizationMultiplier;
+  const totalEAV = totalAV * eqMultiplier;
 
   const annualDebtService = pmt(bond.principal, bond.interestRate, bond.termYears);
   const impliedTaxRate = annualDebtService / totalEAV;
@@ -95,6 +100,8 @@ export function calculate(bond: BondParams, home: HomeParams, advanced?: Advance
     totalExemptions: exemptions,
     adjustedEAV,
     annualDebtService,
+    totalEAV,
+    equalizationMultiplier: eqMultiplier,
     impliedTaxRate,
     annualCost,
     monthlyCost,

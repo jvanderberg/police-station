@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { DEFAULTS, type BondParams, type AdvancedParams } from "../calculator";
 
 interface BondSettingsProps {
@@ -21,19 +21,32 @@ export default function BondSettings({ bond, onBondChange, advanced, onAdvancedC
   const totalRepaid = annualDebtService * bond.termYears;
   const totalInterest = totalRepaid - bond.principal;
   const [bondText, setBondText] = useState(formatDollars(bond.principal));
-  const [eavText, setEavText] = useState(formatDollars(advanced.totalEAV));
+  const [avText, setAvText] = useState(formatDollars(advanced.totalAV));
   const [eqText, setEqText] = useState(String(advanced.equalizationMultiplier));
+  const derivedEAV = advanced.totalAV * advanced.equalizationMultiplier;
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showEavHelp, setShowEavHelp] = useState(false);
   const [showEqHelp, setShowEqHelp] = useState(false);
+  const eavRef = useRef<HTMLDivElement>(null);
+  const eqRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showEavHelp && !showEqHelp) return;
+    function onMouseDown(e: MouseEvent) {
+      if (showEavHelp && eavRef.current && !eavRef.current.contains(e.target as Node)) setShowEavHelp(false);
+      if (showEqHelp && eqRef.current && !eqRef.current.contains(e.target as Node)) setShowEqHelp(false);
+    }
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, [showEavHelp, showEqHelp]);
 
   useEffect(() => {
     setBondText(formatDollars(bond.principal));
   }, [bond.principal]);
 
   useEffect(() => {
-    setEavText(formatDollars(advanced.totalEAV));
-  }, [advanced.totalEAV]);
+    setAvText(formatDollars(advanced.totalAV));
+  }, [advanced.totalAV]);
 
   useEffect(() => {
     setEqText(String(advanced.equalizationMultiplier));
@@ -143,34 +156,36 @@ export default function BondSettings({ bond, onBondChange, advanced, onAdvancedC
       {showAdvanced && (
         <div className="advanced-section">
           <div className="advanced-inputs">
-            <div className="bond-input-label">
+            <div className="bond-input-label" ref={eavRef}>
               <span className="label-with-help">
-                Oak Park Total EAV
+                Oak Park Total Assessed Value
                 <button
                   className="help-btn"
                   onClick={() => setShowEavHelp(!showEavHelp)}
-                  aria-label="What is EAV?"
+                  aria-label="What is total assessed value?"
                 >?</button>
               </span>
               {showEavHelp && (
-                <div className="help-popup">
-                  <strong>Equalized Assessed Value (EAV)</strong> is the total taxable value of all property in Oak Park after the state equalization factor is applied. The village's bond debt service is spread across this total EAV to determine each property's share.
+                <div className="help-popup-wrapper">
+                  <div className="help-popup">
+                    The total assessed value of all property in Oak Park before the state equalization factor is applied. This is multiplied by the equalization factor to get the total EAV, which determines how the bond levy is spread across properties.
+                  </div>
                 </div>
               )}
               <input
                 type="text"
                 inputMode="numeric"
                 className="bond-input"
-                value={eavText}
+                value={avText}
                 onChange={(e) => {
-                  setEavText(e.target.value);
+                  setAvText(e.target.value);
                   const parsed = Number(e.target.value.replace(/[^0-9]/g, ""));
-                  if (!isNaN(parsed) && parsed > 0) onAdvancedChange({ ...advanced, totalEAV: parsed });
+                  if (!isNaN(parsed) && parsed > 0) onAdvancedChange({ ...advanced, totalAV: parsed });
                 }}
-                onBlur={() => setEavText(formatDollars(advanced.totalEAV))}
+                onBlur={() => setAvText(formatDollars(advanced.totalAV))}
               />
             </div>
-            <div className="bond-input-label">
+            <div className="bond-input-label" ref={eqRef}>
               <span className="label-with-help">
                 State Equalization Multiplier
                 <button
@@ -180,8 +195,10 @@ export default function BondSettings({ bond, onBondChange, advanced, onAdvancedC
                 >?</button>
               </span>
               {showEqHelp && (
-                <div className="help-popup">
-                  <strong>State Equalization Multiplier</strong> is a factor set annually by the Illinois Department of Revenue to equalize Cook County assessments with the rest of the state. Your assessed value (10% of market value) is multiplied by this factor to get your equalized assessed value.
+                <div className="help-popup-wrapper">
+                  <div className="help-popup">
+                    A factor set annually by the Illinois Department of Revenue to equalize Cook County assessments with the rest of the state. Both your individual assessed value and the village total are multiplied by this factor.
+                  </div>
                 </div>
               )}
               <input
@@ -198,6 +215,9 @@ export default function BondSettings({ bond, onBondChange, advanced, onAdvancedC
               />
             </div>
           </div>
+          <p className="advanced-derived">
+            Total EAV = ${formatDollars(Math.round(derivedEAV))}
+          </p>
           <p className="defaults-note">
             Defaults are from Tax Year 2024: EAV ${formatDollars(DEFAULTS.oakParkTotalEAV)} (Cook County Clerk),
             Equalization Factor {DEFAULTS.equalizationMultiplier} (IL Dept. of Revenue)
