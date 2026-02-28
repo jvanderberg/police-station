@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { CalculationResult, AdvancedParams } from "../calculator";
 
 interface ResultsPanelProps {
@@ -14,6 +15,9 @@ function fmtPercent(n: number): string {
 }
 
 export default function ResultsPanel({ result, advanced }: ResultsPanelProps) {
+  const [showEavHelp, setShowEavHelp] = useState(false);
+  const [showEqHelp, setShowEqHelp] = useState(false);
+
   return (
     <div className="results-panel">
       <h2>Your Estimated Bond Cost</h2>
@@ -41,7 +45,15 @@ export default function ResultsPanel({ result, advanced }: ResultsPanelProps) {
               <td className="num">${fmtCurrency(result.annualDebtService)}</td>
             </tr>
             <tr>
-              <td>Oak Park Total EAV</td>
+              <td>
+                Oak Park Total EAV
+                <button className="help-btn" onClick={() => setShowEavHelp(!showEavHelp)} aria-label="What is EAV?">?</button>
+                {showEavHelp && (
+                  <div className="help-popup">
+                    <strong>Equalized Assessed Value (EAV)</strong> is the total taxable value of all property in Oak Park after the state equalization factor is applied. The village's bond debt service is spread across this total EAV to determine each property's share.
+                  </div>
+                )}
+              </td>
               <td className="num">${fmtCurrency(advanced.totalEAV)}</td>
             </tr>
             <tr className="highlight-row">
@@ -56,7 +68,15 @@ export default function ResultsPanel({ result, advanced }: ResultsPanelProps) {
               <td className="num">${fmtCurrency(result.assessedValue)}</td>
             </tr>
             <tr>
-              <td>Equalized Value (&times; {advanced.equalizationMultiplier})</td>
+              <td>
+                Equalized Value (&times; {advanced.equalizationMultiplier})
+                <button className="help-btn" onClick={() => setShowEqHelp(!showEqHelp)} aria-label="What is the equalization multiplier?">?</button>
+                {showEqHelp && (
+                  <div className="help-popup">
+                    <strong>State Equalization Multiplier</strong> is a factor set annually by the Illinois Department of Revenue to equalize Cook County assessments with the rest of the state. Your assessed value (10% of market value) is multiplied by this factor to get your equalized assessed value.
+                  </div>
+                )}
+              </td>
               <td className="num">${fmtCurrency(result.equalizedValue)}</td>
             </tr>
             <tr>
