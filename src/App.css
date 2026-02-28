@@ -80,6 +80,14 @@ body {
   font-size: 0.95rem;
 }
 
+.intro-text {
+  max-width: 580px;
+  margin: 0.75rem auto 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
 /* Layout */
 .app-layout {
   display: grid;

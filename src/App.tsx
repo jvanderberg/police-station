@@ -53,8 +53,11 @@ export default function App() {
           <h1>Oak Park Police Station Bond Cost Calculator</h1>
           <button className="reset-button" onClick={handleReset}>Reset</button>
         </div>
-        <p className="subtitle">
-          Estimate your household tax impact using Cook County property tax mechanics
+        <p className="intro-text">
+          Oak Park is considering a bond to fund a new police station. This calculator estimates
+          how much would be <strong>added to your existing property tax bill</strong> each year
+          based on your home's value, the bond amount, and how Cook County calculates property
+          taxes. Adjust the inputs below to explore different scenarios.
         </p>
       </header>
       <BondSettings bond={bond} onBondChange={setBond} advanced={advanced} onAdvancedChange={setAdvanced} annualDebtService={result.annualDebtService} />
